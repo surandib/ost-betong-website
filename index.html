@@ -51,8 +51,8 @@
 
   [data-theme="light"] {
     --hero-bg: #1A1C22;
-    --accent: #1B3A6B;
-    --accent-hover: #152e56;
+    --accent: #E85D26;
+    --accent-hover: #C94D1A;
     --section-bg: var(--bg-light);
     --section-text: var(--text-dark);
     --card-bg: var(--bg-white);
@@ -91,6 +91,10 @@
   @keyframes slideLeft {
     from { opacity: 0; transform: translateX(30px); }
     to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes checkPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(46,125,50,0); transform: scale(1); }
+    50% { box-shadow: 0 0 20px 8px rgba(46,125,50,0.5); transform: scale(1.15); }
   }
   @keyframes countUp {
     from { opacity: 0; transform: translateY(10px); }
@@ -332,13 +336,12 @@
   }
   .hero h1 {
     font-family: 'Antonio', sans-serif;
-    font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+    font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 700;
-    line-height: 1.05;
+    line-height: 1.1;
     color: var(--logo-yellow);
     margin-bottom: 28px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
     animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
   }
   .hero-tagline {
@@ -368,12 +371,16 @@
   .hero-check .check-icon {
     width: 26px; height: 26px;
     border-radius: 50%;
-    background: var(--accent);
+    background: #2E7D32;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    animation: checkPulse 2.5s ease-in-out infinite;
   }
+  .hero-check:nth-child(2) .check-icon { animation-delay: 0.6s; }
+  .hero-check:nth-child(3) .check-icon { animation-delay: 1.2s; }
+  .hero-check:nth-child(4) .check-icon { animation-delay: 1.8s; }
   .hero-check .check-icon::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
   .hero-buttons {
     display: flex;
@@ -404,16 +411,17 @@
     color: #fff;
     text-decoration: none;
     font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 16px 32px;
-    border: 1.5px solid rgba(255,255,255,0.35);
+    background: #2E7D32;
+    border: none;
     border-radius: 10px;
   }
-  .btn-secondary:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.08); }
+  .btn-secondary:hover { background: #1B5E20; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,125,50,0.35); }
 
   /* ===== TRUST BAR ===== */
   .trust-bar {
@@ -494,7 +502,6 @@
   .services .section-subtitle {
     font-size: clamp(1rem, 1.5vw, 1.15rem);
     color: var(--section-text);
-    opacity: 0.6;
     max-width: 600px;
     margin: 16px auto 0;
     line-height: 1.6;
@@ -544,15 +551,16 @@
   }
   .service-card:hover .service-icon { background: rgba(232,93,38,0.18); }
   .service-card h3 {
-    font-size: 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 20px;
     font-weight: 700;
     color: var(--section-text);
     margin-bottom: 10px;
     transition: color 0.5s;
   }
   .service-card .service-desc {
+    font-family: 'DM Sans', sans-serif;
     color: var(--section-text);
-    opacity: 0.7;
     font-size: 15px;
     line-height: 1.65;
     margin-bottom: 18px;
@@ -565,7 +573,6 @@
   }
   .service-list li {
     color: var(--section-text);
-    opacity: 0.75;
     font-size: 14px;
     line-height: 1.5;
     padding: 5px 0;
@@ -781,26 +788,19 @@
   }
 </style>
 </head>
-<body data-theme="hybrid">
+<body>
 
 <!-- THEME SWITCHER -->
 <div class="theme-switcher">
-  <button class="theme-btn" onclick="setTheme('hybrid')" id="btn-hybrid">A: Hybrid</button>
-  <button class="theme-btn" onclick="setTheme('dark')" id="btn-dark">B: Mørk</button>
-  <button class="theme-btn" onclick="setTheme('light')" id="btn-light">C: Lys</button>
+  <button class="theme-btn" onclick="setTheme('dark')" id="btn-dark">Mørk</button>
+  <button class="theme-btn" onclick="setTheme('light')" id="btn-light">Lys</button>
 </div>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="navbar-inner">
     <a href="#hjem" class="navbar-logo">
-      <div class="navbar-logo-icon">
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 4L4 18h4v16h24V18h4L20 4z" fill="none" stroke="#E6E044" stroke-width="2.5" stroke-linejoin="round"/>
-          <rect x="15" y="22" width="10" height="12" rx="1" fill="none" stroke="#E6E044" stroke-width="2"/>
-        </svg>
-      </div>
-      <span>Øst Betongentreprenør AS</span>
+      <img src="logo.png" alt="Øst Betongentreprenør" style="height:60px;width:auto">
     </a>
     <div class="navbar-links">
       <a href="#hjem">Hjem</a>
@@ -821,7 +821,7 @@
   <a href="#tjenester" onclick="toggleMenu()">Tjenester</a>
   <a href="#omoss" onclick="toggleMenu()">Om oss</a>
   <a href="#kontakt" class="mobile-cta" onclick="toggleMenu()">Kontakt oss</a>
-  <a href="tel:+4740037006" class="mobile-phone">📞 +47 400 37 006</a>
+  <a href="tel:+4740037006" class="mobile-phone"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> +47 400 37 006</a>
 </div>
 
 <!-- HERO — CENTERED -->
@@ -839,7 +839,7 @@
       <div class="hero-check"><div class="check-icon"></div> Kvalitetsgaranti</div>
     </div>
     <div class="hero-buttons">
-      <a href="tel:+4740037006" class="btn-primary">📞 +47 400 37 006</a>
+      <a href="tel:+4740037006" class="btn-primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> +47 400 37 006</a>
       <a href="#kontakt" class="btn-secondary">Send oss en melding →</a>
     </div>
   </div>
@@ -871,20 +871,20 @@
     <div class="section-header reveal">
       <div class="section-label">Våre tjenester</div>
       <h2>Alt innen bygg, betong<br>og anlegg</h2>
-      <p class="section-subtitle">Fra fundamentering til ferdigstillelse — vi leverer komplette løsninger med erfarne fagfolk og kvalitetsmaterialer.</p>
+      <p class="section-subtitle">Fra fundamentering til ferdigstillelse, vi leverer komplette løsninger med erfarne fagfolk og kvalitetsmaterialer.</p>
     </div>
     <div class="services-grid">
       <div class="service-card reveal reveal-delay-1">
         <img class="service-card-img" src="image1.jpg" alt="Betongarbeid - støping av plate">
         <div class="service-card-body">
-          <div class="service-icon">🧱</div>
           <h3>Betongarbeid</h3>
-          <p class="service-desc">Spesialister på alle typer betongkonstruksjoner. Vi leverer solid og holdbart arbeid med moderne metoder.</p>
+          <p class="service-desc">Spesialister på alle typer betongkonstruksjoner for bolig og næring. Vi bruker moderne metoder og kvalitetsmaterialer for varige resultater.</p>
           <ul class="service-list">
             <li>Støping av gulv, plater og fundamenter</li>
             <li>Forskaling og armering</li>
             <li>Ringmur og grunnmur</li>
-            <li>Reparasjon og rehabilitering</li>
+            <li>Betongtrapper og murer</li>
+            <li>Reparasjon og rehabilitering av betong</li>
           </ul>
           <div class="service-card-footer">
             <a href="#kontakt">Be om tilbud</a>
@@ -894,14 +894,14 @@
       <div class="service-card reveal reveal-delay-2">
         <img class="service-card-img" src="image7.jpg" alt="Snekkerarbeid - konstruksjon">
         <div class="service-card-body">
-          <div class="service-icon">🪚</div>
           <h3>Snekkerarbeid</h3>
-          <p class="service-desc">Profesjonelt snekkerarbeid fra mindre oppdrag til større byggeprosjekter. Alltid solide resultater.</p>
+          <p class="service-desc">Profesjonelt snekkerarbeid av høy kvalitet. Fra mindre oppdrag til større byggeprosjekter, vi leverer alltid solide resultater.</p>
           <ul class="service-list">
             <li>Tilbygg og påbygg</li>
             <li>Innvendig og utvendig panel</li>
             <li>Terrasser og uteplasser</li>
             <li>Garasjer og uthus</li>
+            <li>Vinduer, dører og listverk</li>
           </ul>
           <div class="service-card-footer">
             <a href="#kontakt">Be om tilbud</a>
@@ -911,14 +911,14 @@
       <div class="service-card reveal reveal-delay-3">
         <img class="service-card-img" src="image6.jpg" alt="Anleggsarbeid - måling og planlegging">
         <div class="service-card-body">
-          <div class="service-icon">🚜</div>
           <h3>Anleggsarbeid</h3>
-          <p class="service-desc">Komplett anleggsarbeid med erfarne maskinkjørere og riktig utstyr for effektiv gjennomføring.</p>
+          <p class="service-desc">Vi utfører omfattende anleggsarbeid med fokus på effektivitet og sikkerhet. Våre team håndterer terrengarbeid og infrastruktur for både private og offentlige prosjekter.</p>
           <ul class="service-list">
-            <li>Graving og grunnarbeid</li>
-            <li>Planering og masseforflytning</li>
-            <li>Vann- og avløpsarbeid</li>
-            <li>Infrastruktur og opparbeidelse</li>
+            <li>Graving, planering og masseflytting</li>
+            <li>Grøftegraving og tomtegraving</li>
+            <li>Drenering og vannhåndtering</li>
+            <li>Asfaltering og veibygging</li>
+            <li>Anlegg av parkeringsplasser og stier</li>
           </ul>
           <div class="service-card-footer">
             <a href="#kontakt">Be om tilbud</a>
