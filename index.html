@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Layout v2 - Øst Betongentreprenør</title>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #0F1117;
+    --bg-surface: #1C1E26;
+    --bg-card: #252830;
+    --bg-light: #F5F4F0;
+    --bg-white: #FFFFFF;
+    --text-primary: #F0EDE8;
+    --text-secondary: #9CA3A8;
+    --text-dark: #1A1C22;
+    --text-muted: #666;
+    --accent: #E85D26;
+    --accent-hover: #C94D1A;
+    --accent-secondary: #C8A96E;
+    --border-light: rgba(255,255,255,0.08);
+    --border-dark: rgba(0,0,0,0.08);
+    --logo-yellow: #E6E044;
+    --hero-bg: var(--bg-primary);
+    --hero-text: var(--text-primary);
+    --hero-sub: var(--text-secondary);
+    --section-bg: var(--bg-light);
+    --section-text: var(--text-dark);
+    --card-bg: var(--bg-white);
+    --card-border: var(--border-dark);
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    --about-bg: var(--bg-surface);
+    --about-text: var(--text-primary);
+    --about-sub: var(--text-secondary);
+    --contact-bg: var(--bg-primary);
+    --contact-text: var(--text-primary);
+    --footer-bg: #0a0b0f;
+  }
+
+  [data-theme="dark"] {
+    --section-bg: var(--bg-surface);
+    --section-text: var(--text-primary);
+    --card-bg: var(--bg-card);
+    --card-border: var(--border-light);
+    --card-shadow: none;
+    --about-bg: var(--bg-primary);
+  }
+
+  [data-theme="light"] {
+    --hero-bg: #1A1C22;
+    --accent: #1B3A6B;
+    --accent-hover: #152e56;
+    --section-bg: var(--bg-light);
+    --section-text: var(--text-dark);
+    --card-bg: var(--bg-white);
+    --about-bg: #E8E6E0;
+    --about-text: var(--text-dark);
+    --about-sub: var(--text-muted);
+    --contact-bg: #1A1C22;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideLeft {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* ===== THEME SWITCHER ===== */
+  .theme-switcher {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+    display: flex;
+    gap: 6px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  .theme-btn {
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    background: transparent;
+    color: #9CA3A8;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .theme-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 0 40px;
+    background: rgba(15,17,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    animation: fadeIn 0.8s ease-out;
+  }
+  .navbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    height: 72px;
+  }
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--logo-yellow);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    text-decoration: none;
+  }
+  .navbar-logo-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .navbar-logo-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  .navbar-links { display: flex; gap: 32px; align-items: center; }
+  .navbar-links a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .navbar-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  .navbar-links a:hover { color: #fff; }
+  .navbar-links a:hover::after { width: 100%; }
+  .navbar-cta {
+    background: var(--accent) !important;
+    color: white !important;
+    padding: 10px 24px !important;
+    border-radius: 8px;
+    font-weight: 600 !important;
+    letter-spacing: 0.03em;
+  }
+  .navbar-cta::after { display: none !important; }
+  .navbar-cta:hover { opacity: 0.9; }
+
+  /* ===== MOBILE HAMBURGER ===== */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 200;
+    background: none;
+    border: none;
+  }
+  .hamburger span {
+    width: 26px;
+    height: 2.5px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+  .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5.5px); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5.5px); }
+
+  /* ===== MOBILE DRAWER ===== */
+  .mobile-drawer {
+    display: none;
+    position: fixed;
+    top: 0; right: 0;
+    width: 280px;
+    height: 100vh;
+    background: rgba(15,17,23,0.98);
+    backdrop-filter: blur(20px);
+    z-index: 150;
+    padding: 90px 32px 32px;
+    flex-direction: column;
+    gap: 8px;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    border-left: 1px solid rgba(255,255,255,0.1);
+  }
+  .mobile-drawer.open { transform: translateX(0); }
+  .mobile-drawer a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: color 0.2s;
+  }
+  .mobile-drawer a:hover { color: #fff; }
+  .mobile-drawer .mobile-cta {
+    background: var(--accent);
+    color: white;
+    text-align: center;
+    padding: 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 16px;
+    border: none;
+    font-size: 16px;
+  }
+  .mobile-drawer .mobile-phone {
+    color: var(--logo-yellow);
+    font-weight: 600;
+    font-size: 18px;
+    margin-top: 8px;
+    border: none;
+  }
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 140;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .mobile-overlay.open { opacity: 1; }
+
+  /* ===== HERO — CENTERED ===== */
+  .hero {
+    background: var(--hero-bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 20%, rgba(15,17,23,0.7) 70%, rgba(15,17,23,0.95) 100%);
+    z-index: 1;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15,17,23,0.92) 0%, rgba(15,17,23,0.5) 35%, rgba(15,17,23,0.55) 60%, rgba(15,17,23,0.92) 100%);
+    z-index: 1;
+  }
+  .hero-bg-img {
+    position: absolute;
+    inset: 0;
+    background-image: url('image2.jpg');
+    background-size: cover;
+    background-position: center center;
+    filter: saturate(0.4) brightness(0.85);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    padding: 0 24px;
+  }
+  .hero h1 {
+    font-family: 'Antonio', sans-serif;
+    font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--logo-yellow);
+    margin-bottom: 28px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  }
+  .hero-tagline {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 44px;
+    line-height: 1.5;
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  }
+  .hero-checks {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px 36px;
+    margin-bottom: 44px;
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
+  }
+  .hero-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    font-weight: 500;
+  }
+  .hero-check .check-icon {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .hero-check .check-icon::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
+  .hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: white;
+    padding: 18px 40px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,93,38,0.35); }
+  .btn-secondary {
+    color: #fff;
+    text-decoration: none;
+    font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 10px;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.08); }
+
+  /* ===== TRUST BAR ===== */
+  .trust-bar {
+    background: var(--accent);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+  }
+  .trust-item { text-align: center; }
+  .trust-number {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+  }
+  .trust-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ===== SECTION WRAPPER ===== */
+  .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  /* ===== SERVICES ===== */
+  .services {
+    background: var(--section-bg);
+    padding: 120px 40px;
+    transition: background 0.5s;
+  }
+  .services .section-header {
+    margin-bottom: 64px;
+  }
+  .services .section-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .services .section-label::before,
+  .services .section-label::after {
+    content: '';
+    width: 32px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .services h2 {
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    font-weight: 800;
+    color: var(--section-text);
+    transition: color 0.5s;
+    line-height: 1.15;
+    margin-top: 12px;
+  }
+  .services .section-subtitle {
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    color: var(--section-text);
+    opacity: 0.6;
+    max-width: 600px;
+    margin: 16px auto 0;
+    line-height: 1.6;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .service-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .service-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 20px 48px rgba(0,0,0,0.14);
+  }
+  .service-card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+  .service-card-body {
+    padding: 32px 28px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .service-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    background: rgba(232,93,38,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    transition: background 0.3s;
+  }
+  .service-card:hover .service-icon { background: rgba(232,93,38,0.18); }
+  .service-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--section-text);
+    margin-bottom: 10px;
+    transition: color 0.5s;
+  }
+  .service-card .service-desc {
+    color: var(--section-text);
+    opacity: 0.7;
+    font-size: 15px;
+    line-height: 1.65;
+    margin-bottom: 18px;
+  }
+  .service-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    flex: 1;
+  }
+  .service-list li {
+    color: var(--section-text);
+    opacity: 0.75;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 5px 0;
+    padding-left: 22px;
+    position: relative;
+  }
+  .service-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+  .service-card-footer {
+    padding-top: 16px;
+    border-top: 1px solid var(--card-border);
+    margin-top: auto;
+  }
+  .service-card-footer a {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.3s;
+  }
+  .service-card-footer a:hover {
+    gap: 10px;
+  }
+  .service-card-footer a::after {
+    content: '\2192';
+    font-size: 16px;
+  }
+
+  /* ===== ABOUT ===== */
+  .about {
+    background: var(--about-bg);
+    padding: 100px 40px;
+    transition: background 0.5s;
+  }
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .about-image {
+    border-radius: 14px;
+    height: 380px;
+    overflow: hidden;
+    position: relative;
+  }
+  .about-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .about-image:hover img { transform: scale(1.03); }
+  .about h2 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: var(--about-text);
+    margin-bottom: 20px;
+    transition: color 0.5s;
+  }
+  .about p {
+    color: var(--about-text);
+    opacity: 0.8;
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+    transition: color 0.5s;
+    font-weight: 400;
+  }
+
+  /* ===== CONTACT ===== */
+  .contact {
+    background: var(--contact-bg);
+    padding: 100px 40px;
+  }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .contact h2 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .contact p { color: rgba(255,255,255,0.8); font-size: 17px; line-height: 1.7; margin-bottom: 28px; }
+  .contact-info-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255,255,255,0.75);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    transition: color 0.2s;
+  }
+  .contact-info-item:hover { color: #fff; }
+  .contact-info-icon {
+    width: 40px; height: 40px;
+    background: rgba(232,93,38,0.12);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .contact-info-item:hover .contact-info-icon { background: rgba(232,93,38,0.22); }
+  .contact-form { display: flex; flex-direction: column; gap: 14px; }
+  .contact-form input, .contact-form textarea {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    padding: 15px 18px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .contact-form input:focus, .contact-form textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,93,38,0.12);
+  }
+  .contact-form textarea { resize: vertical; min-height: 110px; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: var(--footer-bg);
+    padding: 28px 40px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ===== SMOOTH TRANSITIONS ===== */
+  *, *::before, *::after {
+    transition-property: background-color, color, border-color, box-shadow;
+    transition-duration: 0.45s;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .navbar-links { display: none; }
+    .hamburger { display: flex; }
+    .mobile-drawer { display: flex; }
+    .mobile-overlay { display: block; }
+
+    .hero-content { max-width: 100%; }
+    .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+    .hero-tagline { font-size: 1rem; margin-bottom: 28px; }
+    .hero-checks { flex-direction: column; align-items: center; gap: 10px; margin-bottom: 32px; }
+    .hero-buttons { flex-direction: column; gap: 12px; }
+    .hero-buttons .btn-primary, .hero-buttons .btn-secondary { width: 100%; justify-content: center; }
+
+    .trust-bar { gap: 16px; flex-wrap: wrap; padding: 20px 24px; }
+    .trust-number { font-size: 22px; }
+    .trust-label { font-size: 10px; }
+
+    .services, .about, .contact { padding: 64px 24px; }
+    .services-grid { grid-template-columns: 1fr; gap: 16px; }
+    .service-card-img { height: 160px; }
+    .service-card-body { padding: 24px 20px; }
+
+    .about-inner { grid-template-columns: 1fr; gap: 32px; }
+    .about-image { height: 240px; }
+
+    .contact-inner { grid-template-columns: 1fr; gap: 32px; }
+
+    .section-inner { padding: 0; }
+    .theme-switcher { top: auto; bottom: 16px; right: 50%; transform: translateX(50%); }
+  }
+
+  /* ===== STICKY MOBILE CALL BUTTON ===== */
+  .mobile-call-bar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 120;
+    background: var(--accent);
+    padding: 14px 24px;
+    text-align: center;
+  }
+  .mobile-call-bar a {
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  @media (max-width: 900px) {
+    .mobile-call-bar { display: block; }
+    .footer { padding-bottom: 70px; }
+  }
+</style>
+</head>
+<body data-theme="hybrid">
+
+<!-- THEME SWITCHER -->
+<div class="theme-switcher">
+  <button class="theme-btn" onclick="setTheme('hybrid')" id="btn-hybrid">A: Hybrid</button>
+  <button class="theme-btn" onclick="setTheme('dark')" id="btn-dark">B: Mørk</button>
+  <button class="theme-btn" onclick="setTheme('light')" id="btn-light">C: Lys</button>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="#hjem" class="navbar-logo">
+      <div class="navbar-logo-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 4L4 18h4v16h24V18h4L20 4z" fill="none" stroke="#E6E044" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="15" y="22" width="10" height="12" rx="1" fill="none" stroke="#E6E044" stroke-width="2"/>
+        </svg>
+      </div>
+      <span>Øst Betongentreprenør AS</span>
+    </a>
+    <div class="navbar-links">
+      <a href="#hjem">Hjem</a>
+      <a href="#tjenester">Tjenester</a>
+      <a href="#omoss">Om oss</a>
+      <a href="#kontakt" class="navbar-cta">Kontakt oss</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Meny">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-overlay" onclick="toggleMenu()"></div>
+<div class="mobile-drawer">
+  <a href="#hjem" onclick="toggleMenu()">Hjem</a>
+  <a href="#tjenester" onclick="toggleMenu()">Tjenester</a>
+  <a href="#omoss" onclick="toggleMenu()">Om oss</a>
+  <a href="#kontakt" class="mobile-cta" onclick="toggleMenu()">Kontakt oss</a>
+  <a href="tel:+4740037006" class="mobile-phone">📞 +47 400 37 006</a>
+</div>
+
+<!-- HERO — CENTERED -->
+<section class="hero" id="hjem">
+  <div class="hero-bg-img"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1><span style="white-space:nowrap">ØST BETONGENTREPRENØR</span><br><span style="font-size:0.7em;font-weight:700">OG ANLEGG AS</span></h1>
+    <p class="hero-tagline">Alt innen bygg og betong på Østlandet</p>
+    <div class="hero-checks">
+      <div class="hero-check"><div class="check-icon"></div> Uforpliktende befaring</div>
+      <div class="hero-check"><div class="check-icon"></div> Avtalt pris</div>
+      <div class="hero-check"><div class="check-icon"></div> Skreddersydde løsninger</div>
+      <div class="hero-check"><div class="check-icon"></div> Kvalitetsgaranti</div>
+    </div>
+    <div class="hero-buttons">
+      <a href="tel:+4740037006" class="btn-primary">📞 +47 400 37 006</a>
+      <a href="#kontakt" class="btn-secondary">Send oss en melding →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item reveal">
+    <div class="trust-number" data-count="10" data-suffix="+">0</div>
+    <div class="trust-label">Års erfaring</div>
+  </div>
+  <div class="trust-item reveal reveal-delay-1">
+    <div class="trust-number" data-count="200" data-suffix="+">0</div>
+    <div class="trust-label">Prosjekter</div>
+  </div>
+  <div class="trust-item reveal reveal-delay-2">
+    <div class="trust-number" data-count="100" data-suffix="%">0</div>
+    <div class="trust-label">Kvalitetsfokus</div>
+  </div>
+  <div class="trust-item reveal reveal-delay-3">
+    <div class="trust-number">Buskerud</div>
+    <div class="trust-label">Dekningsområde</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="tjenester">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Våre tjenester</div>
+      <h2>Alt innen bygg, betong<br>og anlegg</h2>
+      <p class="section-subtitle">Fra fundamentering til ferdigstillelse — vi leverer komplette løsninger med erfarne fagfolk og kvalitetsmaterialer.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <img class="service-card-img" src="image1.jpg" alt="Betongarbeid - støping av plate">
+        <div class="service-card-body">
+          <div class="service-icon">🧱</div>
+          <h3>Betongarbeid</h3>
+          <p class="service-desc">Spesialister på alle typer betongkonstruksjoner. Vi leverer solid og holdbart arbeid med moderne metoder.</p>
+          <ul class="service-list">
+            <li>Støping av gulv, plater og fundamenter</li>
+            <li>Forskaling og armering</li>
+            <li>Ringmur og grunnmur</li>
+            <li>Reparasjon og rehabilitering</li>
+          </ul>
+          <div class="service-card-footer">
+            <a href="#kontakt">Be om tilbud</a>
+          </div>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <img class="service-card-img" src="image7.jpg" alt="Snekkerarbeid - konstruksjon">
+        <div class="service-card-body">
+          <div class="service-icon">🪚</div>
+          <h3>Snekkerarbeid</h3>
+          <p class="service-desc">Profesjonelt snekkerarbeid fra mindre oppdrag til større byggeprosjekter. Alltid solide resultater.</p>
+          <ul class="service-list">
+            <li>Tilbygg og påbygg</li>
+            <li>Innvendig og utvendig panel</li>
+            <li>Terrasser og uteplasser</li>
+            <li>Garasjer og uthus</li>
+          </ul>
+          <div class="service-card-footer">
+            <a href="#kontakt">Be om tilbud</a>
+          </div>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <img class="service-card-img" src="image6.jpg" alt="Anleggsarbeid - måling og planlegging">
+        <div class="service-card-body">
+          <div class="service-icon">🚜</div>
+          <h3>Anleggsarbeid</h3>
+          <p class="service-desc">Komplett anleggsarbeid med erfarne maskinkjørere og riktig utstyr for effektiv gjennomføring.</p>
+          <ul class="service-list">
+            <li>Graving og grunnarbeid</li>
+            <li>Planering og masseforflytning</li>
+            <li>Vann- og avløpsarbeid</li>
+            <li>Infrastruktur og opparbeidelse</li>
+          </ul>
+          <div class="service-card-footer">
+            <a href="#kontakt">Be om tilbud</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="omoss">
+  <div class="section-inner">
+    <div class="about-inner">
+      <div class="about-logo reveal" style="display:flex;align-items:center;justify-content:center">
+        <img src="logo.png" alt="Øst Betongentreprenør og Anlegg AS logo" style="max-width:100%;height:auto">
+      </div>
+      <div>
+        <div class="section-label reveal">Om oss</div>
+        <h2 class="reveal reveal-delay-1">Din ekspert på betong i Buskerud</h2>
+        <p class="reveal reveal-delay-2">Øst Betongentreprenør og Anlegg AS er din pålitelige partner for alt innen bygg og betong i Drammen, Vikersund, Modum og resten av Buskerud.</p>
+        <p class="reveal reveal-delay-3">Med mange års erfaring leverer vi kvalitetsarbeid til avtalt tid og pris. Vi er stolte av vårt håndverk og setter kundetilfredshet i fokus.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="kontakt">
+  <div class="section-inner">
+    <div class="contact-inner">
+      <div>
+        <div class="section-label reveal" style="color: var(--accent);">Kontakt oss</div>
+        <h2 class="reveal reveal-delay-1">Ta kontakt</h2>
+        <p class="reveal reveal-delay-2">Ønsker du et uforpliktende tilbud? Ta kontakt med oss i dag.</p>
+        <div class="contact-info-item reveal reveal-delay-2">
+          <div class="contact-info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <span>+47 400 37 006</span>
+        </div>
+        <div class="contact-info-item reveal reveal-delay-3">
+          <div class="contact-info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <span>post@ost-betongent.no</span>
+        </div>
+        <div class="contact-info-item reveal reveal-delay-3">
+          <div class="contact-info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <span>Drammen / Vikersund / Modum</span>
+        </div>
+      </div>
+      <div class="contact-form reveal reveal-delay-1">
+        <input type="text" placeholder="Ditt navn">
+        <input type="email" placeholder="E-post">
+        <input type="tel" placeholder="Telefon">
+        <textarea placeholder="Beskriv ditt prosjekt..."></textarea>
+        <button class="btn-primary" style="width: fit-content; border: none;">Send melding</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2026 Øst Betongentreprenør og Anlegg AS. Alle rettigheter reservert.</p>
+</footer>
+
+<!-- STICKY MOBILE CALL BAR -->
+<div class="mobile-call-bar">
+  <a href="tel:+4740037006">📞 Ring oss: +47 400 37 006</a>
+</div>
+
+<script>
+// ===== THEME SWITCHER =====
+function setTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('btn-' + theme).classList.add('active');
+  if (theme === 'light') {
+    document.documentElement.style.setProperty('--accent', '#1B3A6B');
+    document.documentElement.style.setProperty('--accent-hover', '#152e56');
+  } else {
+    document.documentElement.style.setProperty('--accent', '#E85D26');
+    document.documentElement.style.setProperty('--accent-hover', '#C94D1A');
+  }
+}
+
+// ===== SCROLL REVEAL ANIMATION =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ===== COUNT-UP ANIMATION =====
+function animateCount(el) {
+  const target = parseInt(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const duration = 2000;
+  const start = performance.now();
+
+  function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeOutExpo(progress);
+    const current = Math.round(eased * target);
+    el.textContent = current + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const counters = entry.target.querySelectorAll('[data-count]');
+      counters.forEach((el, i) => {
+        setTimeout(() => animateCount(el), i * 200);
+      });
+      countObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.trust-bar').forEach(el => countObserver.observe(el));
+
+// ===== MOBILE MENU =====
+function toggleMenu() {
+  document.querySelector('.hamburger').classList.toggle('open');
+  document.querySelector('.mobile-drawer').classList.toggle('open');
+  document.querySelector('.mobile-overlay').classList.toggle('open');
+  document.body.style.overflow = document.querySelector('.mobile-drawer').classList.contains('open') ? 'hidden' : '';
+}
+
+// ===== NAVBAR SCROLL EFFECT =====
+window.addEventListener('scroll', () => {
+  const navbar = document.querySelector('.navbar');
+  if (window.scrollY > 80) {
+    navbar.style.background = 'rgba(15,17,23,0.97)';
+    navbar.style.borderBottomColor = 'rgba(255,255,255,0.12)';
+  } else {
+    navbar.style.background = 'rgba(15,17,23,0.85)';
+    navbar.style.borderBottomColor = 'rgba(255,255,255,0.1)';
+  }
+});
+
+// Set default theme
+setTheme('hybrid');
+</script>
+</body>
+</html>
