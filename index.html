@@ -31,7 +31,7 @@
     --section-text: var(--text-dark);
     --card-bg: var(--bg-white);
     --card-border: var(--border-dark);
-    --card-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    --card-shadow: 0 4px 20px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
     --about-bg: var(--bg-surface);
     --about-text: var(--text-primary);
     --about-sub: var(--text-secondary);
@@ -41,12 +41,12 @@
   }
 
   [data-theme="dark"] {
-    --section-bg: var(--bg-surface);
+    --section-bg: #1C1E26;
     --section-text: var(--text-primary);
     --card-bg: var(--bg-card);
     --card-border: var(--border-light);
-    --card-shadow: none;
-    --about-bg: var(--bg-primary);
+    --card-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    --about-bg: #1A1F2B;
   }
 
   [data-theme="light"] {
@@ -56,9 +56,9 @@
     --section-bg: var(--bg-light);
     --section-text: var(--text-dark);
     --card-bg: var(--bg-white);
-    --about-bg: #E8E6E0;
-    --about-text: var(--text-dark);
-    --about-sub: var(--text-muted);
+    --about-bg: #1A1F2B;
+    --about-text: var(--text-primary);
+    --about-sub: var(--text-secondary);
     --contact-bg: #1A1C22;
   }
 
@@ -115,34 +115,37 @@
   .reveal-delay-3 { transition-delay: 0.3s; }
 
   /* ===== THEME SWITCHER ===== */
-  .theme-switcher {
-    position: fixed;
-    top: 16px;
-    right: 16px;
+  .theme-toggle {
+    position: relative;
     z-index: 1000;
-    display: flex;
-    gap: 6px;
-    background: rgba(0,0,0,0.85);
+    margin-left: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
     backdrop-filter: blur(12px);
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-  }
-  .theme-btn {
-    padding: 6px 14px;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 6px;
-    background: transparent;
-    color: #9CA3A8;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
+    box-shadow: none;
     cursor: pointer;
-    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
   }
-  .theme-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
-  .theme-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .theme-toggle:hover { transform: scale(1.1); background: rgba(0,0,0,0.85); }
+  .theme-toggle svg { width: 22px; height: 22px; transition: all 0.3s ease; }
+  .theme-toggle .icon-sun { display: none; }
+  .theme-toggle .icon-moon { display: block; }
+  [data-theme="light"] .theme-toggle { background: rgba(255,255,255,0.85); border-color: rgba(0,0,0,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  [data-theme="light"] .navbar { background: transparent; border-bottom: none; backdrop-filter: none; }
+  [data-theme="light"] .navbar-links a { color: white; }
+  [data-theme="light"] .navbar-links a:hover { color: #E6E044; }
+  
+  .navbar-scrolled-light .navbar-links a { color: #1A1C22 !important; }
+  .navbar-scrolled-light .navbar-links a:hover { color: #000 !important; }
+  [data-theme="light"] .theme-toggle:hover { background: rgba(255,255,255,1); }
+  [data-theme="light"] .theme-toggle .icon-sun { display: block; }
+  [data-theme="light"] .theme-toggle .icon-moon { display: none; }
 
   /* ===== NAVBAR ===== */
   .navbar {
@@ -759,7 +762,7 @@
     .contact-inner { grid-template-columns: 1fr; gap: 32px; }
 
     .section-inner { padding: 0; }
-    .theme-switcher { top: auto; bottom: 16px; right: 50%; transform: translateX(50%); }
+
   }
 
   /* ===== STICKY MOBILE CALL BUTTON ===== */
@@ -788,13 +791,7 @@
   }
 </style>
 </head>
-<body>
-
-<!-- THEME SWITCHER -->
-<div class="theme-switcher">
-  <button class="theme-btn" onclick="setTheme('dark')" id="btn-dark">Mørk</button>
-  <button class="theme-btn" onclick="setTheme('light')" id="btn-light">Lys</button>
-</div>
+<body data-theme="light">
 
 <!-- NAVBAR -->
 <nav class="navbar">
@@ -807,6 +804,10 @@
       <a href="#tjenester">Tjenester</a>
       <a href="#omoss">Om oss</a>
       <a href="#kontakt" class="navbar-cta">Kontakt oss</a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="#1A1C22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
     </div>
     <button class="hamburger" onclick="toggleMenu()" aria-label="Meny">
       <span></span><span></span><span></span>
@@ -996,11 +997,12 @@
 
 <script>
 // ===== THEME SWITCHER =====
-function setTheme(theme) {
+let isDark = false;
+function toggleTheme() {
+  isDark = !isDark;
+  const theme = isDark ? 'dark' : 'light';
   document.body.setAttribute('data-theme', theme);
-  document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById('btn-' + theme).classList.add('active');
-  if (theme === 'light') {
+  if (!isDark) {
     document.documentElement.style.setProperty('--accent', '#1B3A6B');
     document.documentElement.style.setProperty('--accent-hover', '#152e56');
   } else {
@@ -1077,17 +1079,36 @@ function toggleMenu() {
 // ===== NAVBAR SCROLL EFFECT =====
 window.addEventListener('scroll', () => {
   const navbar = document.querySelector('.navbar');
+  const isLight = document.body.getAttribute('data-theme') === 'light';
   if (window.scrollY > 80) {
-    navbar.style.background = 'rgba(15,17,23,0.97)';
-    navbar.style.borderBottomColor = 'rgba(255,255,255,0.12)';
+    if (isLight) {
+      navbar.style.background = 'rgba(255,255,255,0.95)';
+      navbar.style.borderBottom = '1px solid rgba(0,0,0,0.08)';
+      navbar.style.backdropFilter = 'blur(20px)';
+      navbar.classList.add('navbar-scrolled-light');
+    } else {
+      navbar.style.background = 'rgba(15,17,23,0.97)';
+      navbar.style.borderBottom = '1px solid rgba(255,255,255,0.12)';
+      navbar.style.backdropFilter = 'blur(20px)';
+    }
   } else {
-    navbar.style.background = 'rgba(15,17,23,0.85)';
-    navbar.style.borderBottomColor = 'rgba(255,255,255,0.1)';
+    if (isLight) {
+      navbar.style.background = 'transparent';
+      navbar.style.borderBottom = 'none';
+      navbar.style.backdropFilter = 'none';
+      navbar.classList.remove('navbar-scrolled-light');
+    } else {
+      navbar.style.background = 'rgba(15,17,23,0.85)';
+      navbar.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+      navbar.style.backdropFilter = 'blur(20px)';
+    }
   }
 });
 
 // Set default theme
-setTheme('hybrid');
+document.body.setAttribute('data-theme', 'light');
+document.documentElement.style.setProperty('--accent', '#1B3A6B');
+document.documentElement.style.setProperty('--accent-hover', '#152e56');
 </script>
 </body>
 </html>
